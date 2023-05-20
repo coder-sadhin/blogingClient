@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BiUserCircle } from 'react-icons/bi';
 import { toast } from 'react-toastify';
 
@@ -36,12 +36,15 @@ const headermanus = [
 
 
 const Header = () => {
-
+    const user = JSON.parse(localStorage.getItem("writer"));
+    const navigate = useNavigate();
     const [show, setShow] = useState(false)
     const [show2, setShow2] = useState(false)
 
     const handleLogout = () => {
-        console.log("log out")
+        localStorage.removeItem("writer");
+        toast.info("Writer Log Out")
+        navigate("/");
     }
 
     const handleClick = (state) => {
@@ -87,29 +90,37 @@ const Header = () => {
                             </div>
                         </label>
                         <ul tabIndex={0} onClick={() => handleClick({ value: false, type: "right" })} className={`menu menu-compact dropdown-content mt-3 p-2 ${show ? "block" : "hidden"} shadow bg-base-100 rounded-box w-52`}>
-                            <li>
-                                <Link to={'/profile'}>
-                                    Profile
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/write'}>
-                                    Write blog
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/login'}>
-                                    Login
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={'/register'}>
-                                    Register
-                                </Link>
-                            </li>
-                            <li>
-                                <p onClick={() => handleLogout()}>Logout</p>
-                            </li>
+                            {
+                                user && <>
+                                    <li>
+                                        <Link to={'/writer/profile'}>
+                                            Profile
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to={'/write'}>
+                                            Write blog
+                                        </Link>
+                                    </li>
+                                </>
+                            }
+                            {
+                                !user ? <>
+                                    <li>
+                                        <Link to={'/writer/login'}>
+                                            Login
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to={'/writer/register'}>
+                                            Register
+                                        </Link>
+                                    </li>
+                                </> :
+                                    <li>
+                                        <p onClick={() => handleLogout()}>Logout</p>
+                                    </li>
+                            }
                         </ul>
                     </div>
                 </div>

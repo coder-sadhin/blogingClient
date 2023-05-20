@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { LoginHelper } from '../helpers/LoginHelper';
+import LoadingSpinner from '../utils/LoadingSpinner';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/writer/profile'
 
-    const onLoginSubmit = (data) => {
-        console.log(data);
+    const onLoginSubmit = async (data) => {
+        setLoading(true);
+        const result = await LoginHelper('writer/login', data)
+        setLoading(false);
+        if (result.status === 200) {
+            toast.success(result.massage);
+            navigate(from, { replace: true })
+        } else {
+            toast.error(result.massage);
+        }
+    }
+
+    if (loading) {
+        return <LoadingSpinner />
     }
 
     return (

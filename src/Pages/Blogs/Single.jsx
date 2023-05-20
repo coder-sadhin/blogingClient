@@ -4,7 +4,7 @@ import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { toast } from 'react-toastify';
-import Menu from '../Component/Menu';
+import Menu from '../../Component/Menu';
 
 const blogData = {
     title: "ডায়াবেটিস থেকে বাঁচার উপায় ২০২২ । ডায়াবেটিস হলে কি কি করা যাবে না",

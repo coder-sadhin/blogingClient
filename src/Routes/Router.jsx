@@ -2,11 +2,15 @@ import {
     createBrowserRouter,
 } from 'react-router-dom';
 import MainLayout from '../Layout/MainLayout';
+import Single from '../Pages/Blogs/Single';
+import Write from '../Pages/Blogs/Write';
 import Home from '../Pages/Home';
 import Login from '../Pages/Login';
 import Register from '../Pages/Register';
-import Single from '../Pages/Single';
-import Write from '../Pages/Write';
+import WriterProfile from '../Pages/Writer/Profile';
+import Verification from '../utils/Verification';
+import VerifyPage from '../utils/VerifyPage';
+import PrivateRoutes from './PrivateRoutes';
 
 
 const router = createBrowserRouter([
@@ -20,20 +24,32 @@ const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: '/register',
+                path: '/writer/register',
                 element: <Register />
             },
             {
-                path: '/login',
+                path: '/writer/login',
                 element: <Login />
             },
             {
                 path: '/write',
-                element: <Write />
+                element: <PrivateRoutes><Write /></PrivateRoutes>
             },
             {
                 path: '/blog/:id',
                 element: <Single />
+            },
+            {
+                path: '/writer/profile',
+                element: <PrivateRoutes><WriterProfile /></PrivateRoutes>
+            },
+            {
+                path: '/writer/verification',
+                element: <Verification />
+            },
+            {
+                path: '/writer/verify',
+                element: <VerifyPage />
             }
         ]
     }

@@ -1,12 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { PostHelper } from '../helpers/PostHelper';
+import LoadingSpinner from '../utils/LoadingSpinner';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [errorTxt, seterrorTxt] = useState();
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const onLoginSubmit = (data) => {
-        console.log(data);
+    const onLoginSubmit = async (data) => {
+        const password = data.password;
+        const minNumberofChars = 6;
+        const regularExpression =
+            /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+        if (password.length < minNumberofChars) {
+            seterrorTxt("Password must be atleast 6 characters long");
+            return;
+        } else {
+            seterrorTxt("");
+        }
+        if (!regularExpression.test(password)) {
+            seterrorTxt(
+                "password should contain atleast one number and one special character"
+            );
+            return;
+        } else {
+            seterrorTxt(
+                ""
+            );
+        }
+        setLoading(true);
+
+        const result = await PostHelper('writer/register', data)
+        // console.log(result);
+
+        setLoading(false);
+        if (result.status_code === 200) {
+            toast.success(result.message)
+            navigate("/writer/verification");
+        } else if (result.status_code === 400) {
+            toast.info(result.message)
+        }
+        else {
+            toast.error(result.message);
+        }
+
+    }
+
+    if (loading) {
+        return <LoadingSpinner />
     }
 
     return (
@@ -16,10 +61,24 @@ const Register = () => {
                 <form onSubmit={handleSubmit(onLoginSubmit)} className="card-body">
                     <div className="form-control">
                         <label className="label">
+                            <span className="label-text">User Name</span>
+                        </label>
+                        <input type="text" {...register("writer_userName")} placeholder="User Name" className="input input-bordered" />
+                        {errors.writer_userName && <span>User Name is required</span>}
+                    </div>
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text">Full Name</span>
+                        </label>
+                        <input type="text" {...register("writer_fullname")} placeholder="Full Name" className="input input-bordered" />
+                        {errors.writer_fullname && <span>Email field is required</span>}
+                    </div>
+                    <div className="form-control">
+                        <label className="label">
                             <span className="label-text">Email</span>
                         </label>
-                        <input type="email" {...register("email")} placeholder="email" className="input input-bordered" />
-                        {errors.email && <span>Email field is required</span>}
+                        <input type="email" {...register("writer_email")} placeholder="email" className="input input-bordered" />
+                        {errors.writer_email && <span>Email field is required</span>}
                     </div>
                     <div className="form-control">
                         <label className="label">
